@@ -13,12 +13,14 @@ if __name__ == "__main__":
     num_epochs = 20  # Adjust as needed
     batch_size = 32  # Adjust as needed
 
-    df_train, df_test = load_dataset()
+    df_train, df_val, df_test = load_dataset()
 
     train_dataset = WildGuardMixDataset(df_train)
+    val_dataset = WildGuardMixDataset(df_val)
     test_dataset = WildGuardMixDataset(df_test)
 
     train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
+    val_loader = DataLoader(val_dataset, batch_size=batch_size)
     test_loader = DataLoader(test_dataset, batch_size=batch_size)
 
     print(" Training batch example")
