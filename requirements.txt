@@ -6,3 +6,4 @@ tqdm
 torch
 sklearn
 transformers
+hf_xet

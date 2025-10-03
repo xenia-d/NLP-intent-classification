@@ -7,10 +7,10 @@ from sklearn.metrics import accuracy_score, f1_score
 from tqdm import tqdm
 import torch.nn as nn
 
-def tokenize(data_batch, tokenizer, max_length=50):
-    tokenized = tokenizer(data_batch, max_length = max_length, truncation=True, padding = "longest", return_tensors="pt")
+# def tokenize(data_batch, tokenizer, max_length=50):
+#     tokenized = tokenizer(data_batch, max_length = max_length, truncation=True, padding = "longest", return_tensors="pt")
 
-    return [tokenized]
+#     return [tokenized]
 
 
 
@@ -20,7 +20,7 @@ def train_model(model_name, train_loader, val_loader, device, num_epochs=5, lr=1
 
     # Loss & optimizer
     criterion = nn.CrossEntropyLoss()
-    optimizer = torch.optim.AdamW(model.parameters(), lr=lr)
+    optimizer = torch.optim.Adam(model.parameters(), lr=lr)
 
     best_val_f1 = 0.0
     history = {"train_loss": [], "val_loss": [], "val_acc": [], "val_f1": []}
@@ -87,7 +87,7 @@ def train_model(model_name, train_loader, val_loader, device, num_epochs=5, lr=1
             best_val_f1 = val_f1
             save_file = f"{save_path}/{model_name}_best.pt"
             torch.save(model.state_dict(), save_file)
-            print(f"✅ Saved best {model_name} model to {save_file}")
+            print(f"Saved best {model_name} model to {save_file}")
 
     print(f"\n=== Finished Training {model_name} ===")
     print(f"Best Val F1: {best_val_f1:.4f}")
@@ -98,8 +98,14 @@ def train_model(model_name, train_loader, val_loader, device, num_epochs=5, lr=1
 
 if __name__ == "__main__":
 
-    num_epochs = 20  # Adjust as needed
+    num_epochs = 3  # Adjust as needed
     batch_size = 32  # Adjust as needed
+    lr = 1e-5        # Adjust as needed
+    save_path = "Saved_Models"
+
+
+    device = torch.device("cuda" if torch.cuda.is_available() else "mps" if torch.backends.mps.is_available() else "cpu")
+    
 
     df_train, df_val, df_test = load_dataset()
 
@@ -114,6 +120,8 @@ if __name__ == "__main__":
         train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
         val_loader = DataLoader(val_dataset, batch_size=batch_size)
         test_loader = DataLoader(test_dataset, batch_size=batch_size)
+
+
         print(f"################ Training with {bert_model_name} model...")
-        # train_model(...)
+        train_model(bert_model_name, train_loader, val_loader, device, num_epochs, lr, save_path)
 

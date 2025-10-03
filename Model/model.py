@@ -37,7 +37,7 @@ def get_model(device, model_name="DistilBert"):
     # Initialize custom model with classification head
     main_model = Model(bert_model, hidden_size)
 
-
+    device = torch.device("cuda" if torch.cuda.is_available() else "mps" if torch.backends.mps.is_available() else "cpu")
     main_model.to(device)
 
     return main_model
