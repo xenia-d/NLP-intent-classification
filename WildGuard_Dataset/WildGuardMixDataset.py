@@ -1,5 +1,6 @@
 from torch.utils.data import Dataset
 import pandas as pd
+import torch
 
 class WildGuardMixDataset(Dataset):
     def __init__(self, df: pd.DataFrame, 
@@ -38,6 +39,18 @@ class WildGuardMixDataset(Dataset):
 
         # Apply tokenizer
         if self.tokenizer_fn:
-            prompt = self.tokenizer_fn(prompt)
+            encoding = self.tokenizer_fn(
+            prompt,
+            truncation=True,
+            padding="max_length",  
+            max_length=128,
+            return_tensors="pt"
+        )
+
+        return {
+            "input_ids": encoding["input_ids"].squeeze(0),       # remove batch dim
+            "attention_mask": encoding["attention_mask"].squeeze(0),
+            "labels": torch.tensor(label, dtype=torch.long)
+        }
 
         return prompt, label
