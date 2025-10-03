@@ -9,9 +9,9 @@ def load_dataset():
     # For quicker testing, a subset of the training data 
     df_train = df_train.iloc[:10000].reset_index(drop=True)
 
-    # divide df_train into train val and test splits (80% train, 10% val, 10% test)
-    df_val, df_test = train_test_split(df_train, test_size=0.2, random_state=42)
-    df_train, df_val = train_test_split(df_train, test_size=0.1, random_state=42)
+    # divide df_train into train val and test splits (70% train, 15% val, 15% test)
+    df_temp, df_test = train_test_split(df_train, test_size=0.15,random_state=12)
+    df_train, df_val = train_test_split(df_temp, test_size=0.1765, random_state=12)
 
     df_train = df_train.dropna(subset=["prompt_harm_label"])
     df_val = df_val.dropna(subset=["prompt_harm_label"])
