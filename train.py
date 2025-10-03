@@ -3,6 +3,10 @@ from torch.utils.data import DataLoader
 from WildGuard_Dataset.WildGuardMixDataset import WildGuardMixDataset
 from WildGuard_Dataset.load_dataset import load_dataset
 
+def tokenize(data_batch, tokenizer, max_length=50):
+    tokenized = tokenizer(data_batch, max_length = max_length, truncation=True, padding = "longest", return_tensors="pt")
+
+    return [tokenized]
 
 
 
