@@ -1,0 +1,7 @@
+datasets
+huggingface-hub
+pandas
+numpy
+notebook
+ipykernel
+tqdm
