@@ -40,7 +40,4 @@ class WildGuardMixDataset(Dataset):
         if self.tokenizer_fn:
             prompt = self.tokenizer_fn(prompt)
 
-        return {
-            "input": prompt,
-            "label": label
-        }
+        return prompt, label
