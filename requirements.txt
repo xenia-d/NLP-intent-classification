@@ -3,3 +3,4 @@ huggingface-hub
 pandas
 numpy
 tqdm
+torch
