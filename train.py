@@ -24,12 +24,13 @@ def train_model(model_name, train_loader, val_loader, device, num_epochs=5, lr=1
 
     best_val_f1 = 0.0
     history = {
-    "train_loss": [],
-    "train_acc": [],
-    "val_loss": [],
-    "val_acc": [],
-    "val_f1": []
-    }   
+        "train_loss": [],
+        "train_acc": [],
+        "train_f1": [],
+        "val_loss": [],
+        "val_acc": [],
+        "val_f1": []
+    }
 
     for epoch in range(num_epochs):
         print(f"\nEpoch {epoch+1}/{num_epochs}")
@@ -61,9 +62,11 @@ def train_model(model_name, train_loader, val_loader, device, num_epochs=5, lr=1
 
         avg_train_loss = total_loss / len(train_loader)
         train_acc = accuracy_score(all_train_labels, all_train_preds)
+        train_f1 = f1_score(all_train_labels, all_train_preds, average="macro")
 
         history["train_loss"].append(avg_train_loss)
         history["train_acc"].append(train_acc)
+        history["train_f1"].append(train_f1)
 
         # -------------------------
         # Validation
@@ -94,8 +97,8 @@ def train_model(model_name, train_loader, val_loader, device, num_epochs=5, lr=1
         history["val_acc"].append(val_acc)
         history["val_f1"].append(val_f1)
 
-        print(f"Train Loss: {avg_train_loss:.4f} | Train Acc: {train_acc:.4f} | "
-            f"Val Loss: {avg_val_loss:.4f} | Val Acc: {val_acc:.4f} | Val F1: {val_f1:.4f}")
+        print(f"Train Loss: {avg_train_loss:.4f} | Train Acc: {train_acc:.4f} | Train F1: {train_f1:.4f} | "
+              f"Val Loss: {avg_val_loss:.4f} | Val Acc: {val_acc:.4f} | Val F1: {val_f1:.4f}")
 
         # Save best model
         if val_f1 > best_val_f1:
