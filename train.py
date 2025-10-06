@@ -23,7 +23,13 @@ def train_model(model_name, train_loader, val_loader, device, num_epochs=5, lr=1
     optimizer = torch.optim.Adam(model.parameters(), lr=lr)
 
     best_val_f1 = 0.0
-    history = {"train_loss": [], "val_loss": [], "val_acc": [], "val_f1": []}
+    history = {
+    "train_loss": [],
+    "train_acc": [],
+    "val_loss": [],
+    "val_acc": [],
+    "val_f1": []
+    }   
 
     for epoch in range(num_epochs):
         print(f"\nEpoch {epoch+1}/{num_epochs}")
@@ -33,6 +39,7 @@ def train_model(model_name, train_loader, val_loader, device, num_epochs=5, lr=1
         # -------------------------
         model.train()
         total_loss = 0
+        all_train_preds, all_train_labels = [], []
 
         for batch in tqdm(train_loader, desc="Training"):
             input_ids = batch["input_ids"].to(device)
@@ -41,22 +48,29 @@ def train_model(model_name, train_loader, val_loader, device, num_epochs=5, lr=1
 
             optimizer.zero_grad()
             logits = model(input_ids=input_ids, attention_mask=attention_mask)
-
             loss = criterion(logits, labels)
+
             loss.backward()
             optimizer.step()
 
             total_loss += loss.item()
 
+            preds = torch.argmax(logits, dim=1)
+            all_train_preds.extend(preds.cpu().numpy())
+            all_train_labels.extend(labels.cpu().numpy())
+
         avg_train_loss = total_loss / len(train_loader)
+        train_acc = accuracy_score(all_train_labels, all_train_preds)
+
         history["train_loss"].append(avg_train_loss)
+        history["train_acc"].append(train_acc)
 
         # -------------------------
         # Validation
         # -------------------------
         model.eval()
         val_loss = 0
-        all_preds, all_labels = [], []
+        all_val_preds, all_val_labels = [], []
 
         with torch.no_grad():
             for batch in tqdm(val_loader, desc="Validating"):
@@ -69,18 +83,19 @@ def train_model(model_name, train_loader, val_loader, device, num_epochs=5, lr=1
                 val_loss += loss.item()
 
                 preds = torch.argmax(logits, dim=1)
-                all_preds.extend(preds.cpu().numpy())
-                all_labels.extend(labels.cpu().numpy())
+                all_val_preds.extend(preds.cpu().numpy())
+                all_val_labels.extend(labels.cpu().numpy())
 
         avg_val_loss = val_loss / len(val_loader)
-        val_acc = accuracy_score(all_labels, all_preds)
-        val_f1 = f1_score(all_labels, all_preds, average="macro")
+        val_acc = accuracy_score(all_val_labels, all_val_preds)
+        val_f1 = f1_score(all_val_labels, all_val_preds, average="macro")
 
         history["val_loss"].append(avg_val_loss)
         history["val_acc"].append(val_acc)
         history["val_f1"].append(val_f1)
 
-        print(f"Train Loss: {avg_train_loss:.4f} | Val Loss: {avg_val_loss:.4f} | Val Acc: {val_acc:.4f} | Val F1: {val_f1:.4f}")
+        print(f"Train Loss: {avg_train_loss:.4f} | Train Acc: {train_acc:.4f} | "
+            f"Val Loss: {avg_val_loss:.4f} | Val Acc: {val_acc:.4f} | Val F1: {val_f1:.4f}")
 
         # Save best model
         if val_f1 > best_val_f1:
@@ -91,7 +106,6 @@ def train_model(model_name, train_loader, val_loader, device, num_epochs=5, lr=1
 
     print(f"\n=== Finished Training {model_name} ===")
     print(f"Best Val F1: {best_val_f1:.4f}")
-    return history
 
 
 
