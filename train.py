@@ -122,7 +122,7 @@ if __name__ == "__main__":
 
 
     device = torch.device("cuda" if torch.cuda.is_available() else "mps" if torch.backends.mps.is_available() else "cpu")
-    
+    print(f"Using device: {device}")
 
     df_train, df_val, df_test = load_dataset()
 
