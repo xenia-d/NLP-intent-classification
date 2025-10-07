@@ -6,6 +6,7 @@ from Model.model import get_model, get_tokenizer
 from sklearn.metrics import accuracy_score, f1_score
 from tqdm import tqdm
 import torch.nn as nn
+import os
 
 # def tokenize(data_batch, tokenizer, max_length=50):
 #     tokenized = tokenizer(data_batch, max_length = max_length, truncation=True, padding = "longest", return_tensors="pt")
@@ -125,20 +126,28 @@ if __name__ == "__main__":
     print(f"Using device: {device}")
 
     df_train, df_val, df_test = load_dataset()
+    curr_model_iteration = 0
 
-    for bert_model_name in ["DistilBert", "Bert", "Roberta"]:
+    for bert_model_name in ["Roberta"]: # , "Bert", "Roberta"
+        while curr_model_iteration < 5:
 
-        tokenizer = get_tokenizer(bert_model_name)
+            while os.path.exists(f"Saved_Models/{bert_model_name}/iteration_{curr_model_iteration}"):
+                print(f"Model path {bert_model_name}/iteration_{curr_model_iteration} already exists. Incrementing iteration.")
+                curr_model_iteration += 1
+            model_save_path = f"Saved_Models/{bert_model_name}/iteration_{curr_model_iteration}"
+            os.makedirs(model_save_path)
 
-        train_dataset = WildGuardMixDataset(df_train, tokenizer_fn=tokenizer)
-        val_dataset = WildGuardMixDataset(df_val, tokenizer_fn=tokenizer)
-        test_dataset = WildGuardMixDataset(df_test, tokenizer_fn=tokenizer)
+            tokenizer = get_tokenizer(bert_model_name)
 
-        train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
-        val_loader = DataLoader(val_dataset, batch_size=batch_size)
-        test_loader = DataLoader(test_dataset, batch_size=batch_size)
+            train_dataset = WildGuardMixDataset(df_train, tokenizer_fn=tokenizer)
+            val_dataset = WildGuardMixDataset(df_val, tokenizer_fn=tokenizer)
+            test_dataset = WildGuardMixDataset(df_test, tokenizer_fn=tokenizer)
+
+            train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
+            val_loader = DataLoader(val_dataset, batch_size=batch_size)
+            test_loader = DataLoader(test_dataset, batch_size=batch_size)
 
 
-        print(f"################ Training with {bert_model_name} model...")
-        train_model(bert_model_name, train_loader, val_loader, device, num_epochs, lr, save_path)
+            print(f"################ Training with {bert_model_name} model...")
+            train_model(bert_model_name, train_loader, val_loader, device, num_epochs, lr, model_save_path)
 
