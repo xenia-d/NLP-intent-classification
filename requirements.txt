@@ -4,6 +4,6 @@ pandas
 numpy
 tqdm
 torch
-sklearn
+scikit-learn
 transformers
 hf_xet
