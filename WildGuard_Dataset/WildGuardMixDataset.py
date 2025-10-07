@@ -48,6 +48,7 @@ class WildGuardMixDataset(Dataset):
         )
 
         return {
+            "prompts": prompt,
             "input_ids": encoding["input_ids"].squeeze(0),       # remove batch dim
             "attention_mask": encoding["attention_mask"].squeeze(0),
             "labels": torch.tensor(label, dtype=torch.long)
