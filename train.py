@@ -128,7 +128,7 @@ if __name__ == "__main__":
     df_train, df_val, df_test = load_dataset()
     curr_model_iteration = 0
 
-    for bert_model_name in ["Roberta"]: # , "Bert", "Roberta"
+    for bert_model_name in ["Bert"]: # , "Bert", "Roberta"
         while curr_model_iteration < 5:
 
             while os.path.exists(f"Saved_Models/{bert_model_name}/iteration_{curr_model_iteration}"):

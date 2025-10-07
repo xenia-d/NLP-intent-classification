@@ -54,7 +54,7 @@ if __name__ == "__main__":
 
     models = []
 
-    bert_model_name = "DistilBert"
+    bert_model_name = "Bert"
     model_path = f'Saved_Models/{bert_model_name}'
     batch_size = 64  # Adjust as needed
 
@@ -104,7 +104,7 @@ if __name__ == "__main__":
     test_acc = accuracy_score(all_labels, all_preds)
     test_f1 = f1_score(all_labels, all_preds, average="macro")
     print(f"Test Acc: {test_acc:.4f} | Test F1: {test_f1:.4f}")
-    print(len(all_entropies), len(all_labels), len(all_prompts), len(all_preds))
+    # print(len(all_entropies), len(all_labels), len(all_prompts), len(all_preds))
     
     df = pd.DataFrame({
         "prompts": all_prompts,
@@ -115,6 +115,6 @@ if __name__ == "__main__":
 
     for key in all_logits.keys():
         df[f'logits_model_{key}'] = all_logits[key]
-        
+
     # save dataframe to csv
     df.to_csv(f"ensembled_results_{bert_model_name}.csv", index=False)
