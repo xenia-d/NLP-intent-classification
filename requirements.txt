@@ -10,6 +10,6 @@ hf_xet
 ipykernel
 matplotlib
 sentence-transformers
-vllm
 compressed-tensors
 accelerate
+bitsandbytes
