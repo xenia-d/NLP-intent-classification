@@ -11,3 +11,4 @@ ipykernel
 matplotlib
 sentence-transformers
 vllm
+compressed-tensors
