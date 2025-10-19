@@ -8,7 +8,7 @@ import re
 import scipy.stats as stats
 import os
 
-def load_dataset(file_path, start_id=1084, end_id=1088):
+def load_dataset(file_path, start_id=1084, end_id=1085):
     """
     Load and filter the dataset by including a range of prompt IDs and keep relevant columns.
     """
@@ -38,9 +38,13 @@ def generate_llm_responses(df, tokenizer, model, prompt_template, max_new_tokens
         # Fill in the system prompt template
         full_prompt_text = prompt_template.format(question=prompt_text)
 
+        messages = [
+            {"role": "user", "content": full_prompt_text}
+        ]
+
         # Apply the chat template (disable thinking)
         full_prompt = tokenizer.apply_chat_template(
-            full_prompt_text,
+            messages,
             tokenize=False,
             add_generation_prompt=True,
             enable_thinking=False
@@ -54,6 +58,7 @@ def generate_llm_responses(df, tokenizer, model, prompt_template, max_new_tokens
 
         print("If this prints then thats great news!! ")
         response = tokenizer.decode(outputs[0], skip_special_tokens=True)
+        print("content:", response)
 
         llm_responses.append({'id': prompt_id, 'LLM_intent': response})
 
