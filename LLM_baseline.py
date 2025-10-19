@@ -10,7 +10,7 @@ import os
 
 def load_dataset(file_path, start_id=1084, end_id=1118):
     """
-    Load and filter the dataset by ID range and keep relevant columns.
+    Load and filter the dataset by including a range of prompt IDs and keep relevant columns.
     """
     df = pd.read_csv(file_path)
     df = df[(df['id'] >= start_id) & (df['id'] <= end_id)]
@@ -19,7 +19,7 @@ def load_dataset(file_path, start_id=1084, end_id=1118):
 
 def load_prompt_template(template_path):
     """
-    Load the system prompt template from a text file.
+    Load the prompt template from a text file.
     """
     with open(template_path, 'r', encoding='utf-8') as f:
         template = f.read()
@@ -46,11 +46,13 @@ def generate_llm_responses(df, tokenizer, model, prompt_template, max_new_tokens
             enable_thinking=False
         )
 
-        print(f"Processing prompt ID {prompt_id} on device: {model.device}")
+        print(f"Processing prompt ID {prompt_id}")
 
         # Tokenize and generate response
         inputs = tokenizer(full_prompt, return_tensors='pt')
         outputs = model.generate(**inputs, max_new_tokens=max_new_tokens)
+
+        print("If this prints then thats great news!! ")
         response = tokenizer.decode(outputs[0], skip_special_tokens=True)
 
         llm_responses.append({'id': prompt_id, 'LLM_intent': response})
@@ -77,7 +79,7 @@ def main():
     # Merge responses back into the original dataset
     df = df.merge(llm_responses_df, on='id', how='left')
 
-    # Save the result to CSV
+    # Save the results
     output_path = "Annotations/annotations_with_LLM_responses.csv"
     df.to_csv(output_path, index=False)
     print(f"Saved annotated dataset with LLM responses to {output_path}")
