@@ -8,7 +8,7 @@ import re
 import scipy.stats as stats
 import os
 
-def load_dataset(file_path, start_id=1084, end_id=1085):
+def load_dataset(file_path, start_id=1084, end_id=1087):
     """
     Load and filter the dataset by including a range of prompt IDs and keep relevant columns.
     """
@@ -53,11 +53,13 @@ def generate_llm_responses(df, tokenizer, model, prompt_template, max_new_tokens
         print(f"Processing prompt ID {prompt_id}")
 
         # Tokenize and generate response
-        inputs = tokenizer(full_prompt, return_tensors='pt')
-        outputs = model.generate(**inputs, max_new_tokens=max_new_tokens)
+        inputs = tokenizer(full_prompt, return_tensors='pt').to(model.device)
+        input_len = inputs["input_ids"].shape[1]  
 
-        print("If this prints then thats great news!! ")
-        response = tokenizer.decode(outputs[0], skip_special_tokens=True)
+        outputs = model.generate(**inputs, max_new_tokens=max_new_tokens)
+        generated_tokens = outputs[0][input_len:]  # Only keep new tokens
+
+        response = tokenizer.decode(generated_tokens, skip_special_tokens=True).strip()
         print("content:", response)
 
         llm_responses.append({'id': prompt_id, 'LLM_intent': response})
