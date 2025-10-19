@@ -71,7 +71,7 @@ def main():
     print("CUDA version:", torch.version.cuda)
     print("GPU:", torch.cuda.get_device_name(0) if torch.cuda.is_available() else "None")
 
-    annotations_path = "Annotations/annotations_5.csv"
+    annotations_path = "Annotations/annotations_6.csv"
     prompt_template_path = "Annotations/annotation_guidelines_prompt.txt"
 
     # Load annotations and and prompt template
