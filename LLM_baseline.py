@@ -15,7 +15,6 @@ def load_dataset(file_path, start_id=1084, end_id=1118):
     df = pd.read_csv(file_path)
     df = df[(df['id'] >= start_id) & (df['id'] <= end_id)]
     df = df[['id', 'prompt', 'annotator', 'intent']]
-    df = df[['id', 'prompt']].drop_duplicates()
     return df
 
 def load_prompt_template(template_path):
@@ -32,7 +31,7 @@ def generate_llm_responses(df, tokenizer, model, prompt_template, max_new_tokens
     """
     llm_responses = []
 
-    for _, row in df.iterrows():
+    for _, row in df[['id', 'prompt']].drop_duplicates().iterrows():
         prompt_id = row['id']
         prompt_text = row['prompt']
 
