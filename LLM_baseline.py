@@ -15,6 +15,7 @@ def load_dataset(file_path, start_id=1084, end_id=1118):
     df = pd.read_csv(file_path)
     df = df[(df['id'] >= start_id) & (df['id'] <= end_id)]
     df = df[['id', 'prompt', 'annotator', 'intent']]
+    df = df[['id', 'prompt']].drop_duplicates()
     return df
 
 def load_prompt_template(template_path):
@@ -31,7 +32,7 @@ def generate_llm_responses(df, tokenizer, model, prompt_template, max_new_tokens
     """
     llm_responses = []
 
-    for _, row in df[['id', 'prompt']].drop_duplicates().iterrows():
+    for _, row in df.iterrows():
         prompt_id = row['id']
         prompt_text = row['prompt']
 
@@ -81,7 +82,7 @@ def main():
     prompt_template = load_prompt_template(prompt_template_path)
 
     # Load model and tokenizer
-    model_name = 'Qwen/Qwen3-8B'
+    model_name = 'Qwen/Qwen1.5-0.5B-Chat'
     tokenizer = AutoTokenizer.from_pretrained(model_name, load_in_4bit=True)
     model = AutoModelForCausalLM.from_pretrained(model_name, device_map='auto')
 
@@ -90,9 +91,11 @@ def main():
 
     # Merge responses back into the original dataset
     df = df.merge(llm_responses_df, on='id', how='left')
-
+    
+    # replace / with _ in model_name
+    file_model_name = model_name.replace('/', '_')
     # Save the results
-    output_path = "Annotations/annotations_with_LLM_responses.csv"
+    output_path = f"Annotations/annotations_with_LLM_responses_{file_model_name}.csv"
     df.to_csv(output_path, index=False)
     print(f"Saved annotated dataset with LLM responses to {output_path}")
 
