@@ -8,7 +8,7 @@ import re
 import scipy.stats as stats
 import os
 
-def load_dataset(file_path, start_id=1084, end_id=1118):
+def load_dataset(file_path, start_id=1084, end_id=1088):
     """
     Load and filter the dataset by including a range of prompt IDs and keep relevant columns.
     """
@@ -61,6 +61,11 @@ def generate_llm_responses(df, tokenizer, model, prompt_template, max_new_tokens
 
 
 def main():
+
+    print("CUDA available:", torch.cuda.is_available())
+    print("CUDA version:", torch.version.cuda)
+    print("GPU:", torch.cuda.get_device_name(0) if torch.cuda.is_available() else "None")
+
     annotations_path = "Annotations/annotations_5.csv"
     prompt_template_path = "Annotations/annotation_guidelines_prompt.txt"
 
@@ -69,8 +74,8 @@ def main():
     prompt_template = load_prompt_template(prompt_template_path)
 
     # Load model and tokenizer
-    model_name = 'RedHatAI/Qwen3-8B-quantized.w4a16'
-    tokenizer = AutoTokenizer.from_pretrained(model_name)
+    model_name = 'Qwen/Qwen3-8B'
+    tokenizer = AutoTokenizer.from_pretrained(model_name, load_in_4bit=True)
     model = AutoModelForCausalLM.from_pretrained(model_name, device_map='auto')
 
     # Generate LLM responses
