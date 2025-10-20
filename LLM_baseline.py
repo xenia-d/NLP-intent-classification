@@ -81,7 +81,7 @@ def main():
     prompt_template = load_prompt_template(prompt_template_path)
 
     # Load model and tokenizer
-    model_name = 'Qwen/Qwen1.5-0.5B-Chat'
+    model_name = 'RedHatAI/Qwen3-8B-quantized.w4a16'
     tokenizer = AutoTokenizer.from_pretrained(model_name, load_in_4bit=True)
     model = AutoModelForCausalLM.from_pretrained(model_name, device_map='auto')
 
