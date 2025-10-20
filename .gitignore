@@ -2,3 +2,5 @@ venv/
 Saved_Models/
 
 *.pyc
+
+xenia_requirements.txt
