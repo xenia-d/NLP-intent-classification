@@ -57,7 +57,7 @@ def main():
     # Load model and tokenizer
     model_name = 'RedHatAI/Qwen3-8B-quantized.w4a16'
     # tokenizer = AutoTokenizer.from_pretrained(model_name, load_in_4bit=True)
-    llm = LLM(model=model_name)
+    llm = LLM(model=model_name, download_dir="./loaded_models")
 
     # Generate LLM responses
     llm_responses_df = generate_llm_responses(df, llm, prompt_template)
