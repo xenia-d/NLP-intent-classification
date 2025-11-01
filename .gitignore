@@ -5,3 +5,6 @@ Saved_Models/
 *.pyc
 
 xenia_requirements.txt
+
+train_results/
+fine_tuned_model/
