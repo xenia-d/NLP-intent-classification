@@ -7,7 +7,7 @@ torch
 scikit-learn
 transformers
 hf_xet
-ipykernel
+jupyter
 matplotlib
 sentence-transformers
 compressed-tensors
