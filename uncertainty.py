@@ -54,9 +54,9 @@ if __name__ == "__main__":
 
     models = []
 
-    bert_model_name = "Bert"
+    bert_model_name = "DistilBert" # "Bert"
     model_path = f'Saved_Models/{bert_model_name}'
-    batch_size = 64  # Adjust as needed
+    batch_size = 16  # Adjust as needed
 
     # loop through all folders in directory
     for folder_name in os.listdir(model_path):

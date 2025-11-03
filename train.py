@@ -117,7 +117,7 @@ def train_model(model_name, train_loader, val_loader, device, num_epochs=5, lr=1
 if __name__ == "__main__":
 
     num_epochs = 3  # Adjust as needed
-    batch_size = 32  # Adjust as needed
+    batch_size = 16 # 32  # Adjust as needed
     lr = 1e-5        # Adjust as needed
     save_path = "Saved_Models"
 
@@ -128,7 +128,7 @@ if __name__ == "__main__":
     df_train, df_val, df_test = load_dataset()
     curr_model_iteration = 0
 
-    for bert_model_name in ["Bert"]: # , "Bert", "Roberta"
+    for bert_model_name in ["DistilBert"]: # DistilBert, "Bert", "Roberta"
         while curr_model_iteration < 5:
 
             while os.path.exists(f"Saved_Models/{bert_model_name}/iteration_{curr_model_iteration}"):
