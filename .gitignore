@@ -1,4 +1,10 @@
 venv/
 Saved_Models/
+.venv/
 
 *.pyc
+
+xenia_requirements.txt
+
+train_results/
+fine_tuned_model/
