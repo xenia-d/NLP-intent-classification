@@ -8,13 +8,6 @@ from tqdm import tqdm
 import torch.nn as nn
 import os
 
-# def tokenize(data_batch, tokenizer, max_length=50):
-#     tokenized = tokenizer(data_batch, max_length = max_length, truncation=True, padding = "longest", return_tensors="pt")
-
-#     return [tokenized]
-
-
-
 def train_model(model_name, train_loader, val_loader, device, num_epochs=5, lr=1e-5, save_path="Saved_Models"):
     # Create model for this backbone
     model = get_model(device, model_name)
