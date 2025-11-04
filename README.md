@@ -1,5 +1,5 @@
 # Intent Detection of Prompts by LLMs
-Welcome to our repository investigating LLMs' ability to deduce the intent of a given prompt. Our project follows the order described below.
+Welcome to our repository investigating LLMs' ability to deduce the intent of a given prompt. Our project follows the order described below. While a high-level overview of each sectoin is described here, please refer to each folder's ReadME for further information.
 
 ## 1. Investigating baseline harm classification and model uncertainty
 In this section, found in the folder `Harm_Classification`, we investigate how well an LLM can classify a prompt as safe or harmful through Supervised Fine-Tuning. Then, we apply an Uncertainty Quantification (UQ) method to determine which prompts are most difficult to classify.
