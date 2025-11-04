@@ -39,6 +39,15 @@ def run_inference(model, tokenizer, inputs):
 
     return generated_intents
 
+def save_prompts(prompts):
+    folder = "generated_intents"
+    filename = "prompts_AmazonScience.json"
+    full_filename = os.path.join(folder, filename)
+    with open(full_filename, 'w', encoding='utf-8') as f:
+        json.dump(prompts, f, ensure_ascii=False, indent=4)
+
+    print(f"Prompts saved to {full_filename}")
+
 def save_intents(intents, prompts, model_name):
     folder = "generated_intents"
     filename = model_name + "_AmazonScience_intents.json"
@@ -52,6 +61,7 @@ def save_intents(intents, prompts, model_name):
 
 def main(model_name="t5-small"):
     prompts = get_dataset(num_samples=20)
+    # save_prompts(prompts)
     model, tokenizer = load_model(model_name=model_name)
     generated_intents = run_inference(model, tokenizer, prompts)
     save_intents(generated_intents, prompts, model_name=model_name)
