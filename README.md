@@ -7,4 +7,8 @@ In this section, found in the folder `Harm_Classification`, we investigate how w
 Note that while this is our implementation of UQ, the final outcome of this step (finding the most uncertain prompts) was provided by Group 8, who had their own implementation.
 
 
+## 2. Human Annotation
+Can someone maybe write this section explaining the protocol and what we did etc.
+
+After initial group annotation, an analysis was performed to investigate the inter-annotator agreement between all annotators. This can be found in the `Intention_Analysis` folder.
 
