@@ -2,12 +2,13 @@ import json
 from datasets import load_dataset, Dataset
 import pandas as pd
 import random
-from transformers import AutoTokenizer, AutoModelForSeq2SeqLM, Seq2SeqTrainer, Seq2SeqTrainingArguments
+from transformers import AutoTokenizer, AutoModelForCausalLM, AutoModelForSeq2SeqLM, Seq2SeqTrainer, Seq2SeqTrainingArguments, TrainingArguments
 import torch
 import numpy as np
 import os
 import matplotlib.pyplot as plt
 import argparse
+from trl import SFTTrainer
 
 
 def load_dataset():
@@ -118,7 +119,7 @@ def get_prompt_and_intents(dataset):
 
     return final_dataset
 
-def preprocess_data(dataset):
+def preprocess_data():
     dataset = load_dataset()
     dataset = make_duplicates_seperate(dataset)
     dataset = clean_incomplete_data(dataset)
@@ -185,7 +186,7 @@ def t5_trainer(model, tokenizer, train_dataset, val_dataset, intent_max, epochs=
         predict_with_generate=True,
         logging_dir="./logs",
         load_best_model_at_end=True,
-        metric_for_best_model="eval_test_loss",
+        metric_for_best_model="eval_loss",
         generation_max_length=intent_max
     )
 
