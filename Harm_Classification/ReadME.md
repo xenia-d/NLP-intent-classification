@@ -24,5 +24,7 @@ The final test F1 scores for each variant of the ensemple were:
 ## Uncertainty Quantification
 Our implementationof Uncertainty Quantification for our ensembles can be found in `uncertainty.py`. The uncertainty of an ensemble of classifiers can be determined by getting the entropy of the mean logits across the base models. That is, the logits per class (`harmful` and `safe`) are averaged, and the entropy of the logits is determined from their softmaxed proabilities. This gives a measure of model confidence, with higher entropy indicating higher uncertainty (lower confidence).
 
+The full results (logits per model in the ensemble, final prediction, and uncertainty) can be found, per model, in the `Results` folder.
+
 ## Analysis
 For each ensemble variant (DistilBert, Bert, and Roberta), we investigate the uncertainty of the model, the most difficult prompts to categorise according to the uncertainty, and other trends in uncertainty. These can all be found in `harm_classification_analysis.ipynb`, please refer to that file for the analyses.
