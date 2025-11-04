@@ -11,7 +11,10 @@ import argparse
 
 
 def load_dataset():
-    with open('WildGuard_Dataset/our_annotations.json', 'r', encoding='utf-8') as f:
+    current_dir = os.path.dirname(__file__)
+    annotations_file_path = os.path.join(current_dir, '..', 'WildGuard_Dataset', 'our_annotations.json')
+
+    with open(os.path.abspath(annotations_file_path), 'r', encoding='utf-8') as f:
         data_json = json.load(f)
     dataset = Dataset.from_list(data_json)
     dataset = dataset.remove_columns(['file_upload', 'drafts', 'predictions', 'meta', 'created_at', 'updated_at', 'inner_id', 'cancelled_annotations', 'total_predictions', 'comment_count', 'unresolved_comment_count', 'last_comment_updated_at', 'project', 'updated_by', 'comment_authors'])
