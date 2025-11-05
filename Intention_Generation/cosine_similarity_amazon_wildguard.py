@@ -84,6 +84,23 @@ if __name__ == "__main__":
 
     humans = pd.read_csv("our_amazon_science_annotations.csv")
     humans.columns = ["prompt", "ann1", "ann2", "ann3"]
+
+    emb_ann1 = model.encode(humans["ann1"].tolist())
+    emb_ann2 = model.encode(humans["ann2"].tolist())
+    emb_ann3 = model.encode(humans["ann3"].tolist())
+
+    # Compute inter-annotator agreement
+    human_agreement_matrix = get_cosine_similarity_agreement_between_individuals([emb_ann1, emb_ann2, emb_ann3])
+    human_agreement_df = pd.DataFrame(
+        human_agreement_matrix,
+        index=["Ann1", "Ann2", "Ann3"],
+        columns=["Ann1", "Ann2", "Ann3"]
+    ).round(3)
+    human_agreement_df.to_csv("analysis/human_interannotator_agreement.csv", index=True)
+    print("Saved: analysis/human_interannotator_agreement.csv")
+    print(human_agreement_df)
+
+
     
     model_files = {
         "T5-small": "generated_intents/t5-small_AmazonScience_intents.json",
@@ -117,10 +134,10 @@ if __name__ == "__main__":
         # Compute mean per annotator + mean across all annotators
         summary_results.append({
             "Model": model_name,
-            "T5 vs Ann1": np.mean(sim1),
-            "T5 vs Ann2": np.mean(sim2),
-            "T5 vs Ann3": np.mean(sim3),
-            "T5 vs All Ann": np.mean([np.mean(sim1), np.mean(sim2), np.mean(sim3)])
+            "T5 vs Ann1": round(np.mean(sim1), 3),
+            "T5 vs Ann2": round(np.mean(sim2), 3),
+            "T5 vs Ann3": round(np.mean(sim3), 3),
+            "T5 vs All Ann": round(np.mean([np.mean(sim1), np.mean(sim2), np.mean(sim3)]), 3)
         })
 
     mean_summary_df = pd.DataFrame(summary_results)
