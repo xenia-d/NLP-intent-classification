@@ -1,0 +1,5 @@
+pandas
+torch
+vllm
+sentence_transformers
+seaborn

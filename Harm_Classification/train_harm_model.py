@@ -1,3 +1,6 @@
+import sys
+import os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 import torch
 from torch.utils.data import DataLoader
 from WildGuard_Dataset.WildGuardMixDataset import WildGuardMixDataset
@@ -7,13 +10,6 @@ from sklearn.metrics import accuracy_score, f1_score
 from tqdm import tqdm
 import torch.nn as nn
 import os
-
-# def tokenize(data_batch, tokenizer, max_length=50):
-#     tokenized = tokenizer(data_batch, max_length = max_length, truncation=True, padding = "longest", return_tensors="pt")
-
-#     return [tokenized]
-
-
 
 def train_model(model_name, train_loader, val_loader, device, num_epochs=5, lr=1e-5, save_path="Saved_Models"):
     # Create model for this backbone
@@ -117,7 +113,7 @@ def train_model(model_name, train_loader, val_loader, device, num_epochs=5, lr=1
 if __name__ == "__main__":
 
     num_epochs = 3  # Adjust as needed
-    batch_size = 32  # Adjust as needed
+    batch_size = 16 # 32  # Adjust as needed
     lr = 1e-5        # Adjust as needed
     save_path = "Saved_Models"
 
@@ -128,7 +124,7 @@ if __name__ == "__main__":
     df_train, df_val, df_test = load_dataset()
     curr_model_iteration = 0
 
-    for bert_model_name in ["Bert"]: # , "Bert", "Roberta"
+    for bert_model_name in ["Roberta"]: # DistilBert, "Bert", "Roberta"
         while curr_model_iteration < 5:
 
             while os.path.exists(f"Saved_Models/{bert_model_name}/iteration_{curr_model_iteration}"):
