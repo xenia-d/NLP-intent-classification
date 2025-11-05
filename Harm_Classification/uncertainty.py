@@ -1,3 +1,6 @@
+import sys
+import os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 import torch
 from torch.utils.data import DataLoader
 from WildGuard_Dataset.WildGuardMixDataset import WildGuardMixDataset
@@ -54,7 +57,7 @@ if __name__ == "__main__":
 
     models = []
 
-    bert_model_name = "DistilBert" # "Bert"
+    bert_model_name = "Roberta" # "Bert"
     model_path = f'Saved_Models/{bert_model_name}'
     batch_size = 16  # Adjust as needed
 

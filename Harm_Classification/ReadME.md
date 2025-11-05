@@ -18,8 +18,8 @@ The final test F1 scores for each variant of the ensemple were:
 | Model      | Test F1 Score |
 | ----------- | ----------- |
 | DistilBert      |   0.78     |
-| Bert   | 0.80        |
-| Roberta |    0.84    |
+| Bert   | 0.92       |
+| Roberta |    0.93   |
 
 ## Uncertainty Quantification
 Our implementationof Uncertainty Quantification for our ensembles can be found in `uncertainty.py`. The uncertainty of an ensemble of classifiers can be determined by getting the entropy of the mean logits across the base models. That is, the logits per class (`harmful` and `safe`) are averaged, and the entropy of the logits is determined from their softmaxed proabilities. This gives a measure of model confidence, with higher entropy indicating higher uncertainty (lower confidence).

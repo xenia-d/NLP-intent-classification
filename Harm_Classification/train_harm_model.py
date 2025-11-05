@@ -1,3 +1,6 @@
+import sys
+import os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 import torch
 from torch.utils.data import DataLoader
 from WildGuard_Dataset.WildGuardMixDataset import WildGuardMixDataset
@@ -121,7 +124,7 @@ if __name__ == "__main__":
     df_train, df_val, df_test = load_dataset()
     curr_model_iteration = 0
 
-    for bert_model_name in ["DistilBert"]: # DistilBert, "Bert", "Roberta"
+    for bert_model_name in ["Roberta"]: # DistilBert, "Bert", "Roberta"
         while curr_model_iteration < 5:
 
             while os.path.exists(f"Saved_Models/{bert_model_name}/iteration_{curr_model_iteration}"):
