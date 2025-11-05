@@ -125,9 +125,9 @@ if __name__ == "__main__":
 
     mean_summary_df = pd.DataFrame(summary_results)
 
-    with open("t5_full_similarity_summary.csv", "w", encoding="utf-8") as f:
+    with open("analysis/t5_full_similarity_summary.csv", "w", encoding="utf-8") as f:
         f.write("\n")
         mean_summary_df.to_csv(f, index=False)
 
-    print("Saved: t5_full_similarity_summary.csv")
+    print("Saved: analysis/t5_full_similarity_summary.csv")
     print(mean_summary_df)
