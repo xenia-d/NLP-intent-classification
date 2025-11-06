@@ -6,6 +6,25 @@ import matplotlib.pyplot as plt
 
 from cosine_similarity_base import *
 
+def save_analysis_results(df, title):
+    with open(f"analysis/{title}", "w", encoding="utf-8") as f:
+        f.write("\n")
+        df.to_csv(f, index=False)
+
+    print(df)
+
+
+def compute_mean_human_agreement_per_prompt(emb_ann1, emb_ann2, emb_ann3):
+    # Compute pairwise cosine-like similarity (dot product)
+    sim_12 = np.sum(emb_ann1 * emb_ann2, axis=1)
+    sim_13 = np.sum(emb_ann1 * emb_ann3, axis=1)
+    sim_23 = np.sum(emb_ann2 * emb_ann3, axis=1)
+
+    # Average the three pairwise similarities
+    mean_agreement = (sim_12 + sim_13 + sim_23) / 3.0
+    return mean_agreement
+
+
 
 if __name__ == "__main__":
     model = get_embedding_model()
@@ -27,19 +46,10 @@ if __name__ == "__main__":
 
     overall_mean_agreement = np.mean([human_agreement_matrix[i][j] for i in range(len(human_agreement_matrix)) for j in range(len(human_agreement_matrix)) if i != j])
 
-    human_agreement_df.to_csv("analysis/human_interannotator_agreement.csv", index=True)
-    print("Saved: analysis/human_interannotator_agreement.csv")
-    print(human_agreement_df)
-    print(f"Overall Mean Inter-Annotator Agreement: {overall_mean_agreement:.3f}")
 
+    save_analysis_results(human_agreement_df, "human_interannotator_agreement.csv")
 
-    # Compute **pairwise annotator agreement per prompt**
-    sim_12 = np.sum(emb_ann1 * emb_ann2, axis=1)
-    sim_13 = np.sum(emb_ann1 * emb_ann3, axis=1)
-    sim_23 = np.sum(emb_ann2 * emb_ann3, axis=1)
-
-    mean_human_agreement = (sim_12 + sim_13 + sim_23) / 3.0
-    humans["mean_human_agreement"] = mean_human_agreement
+    humans["mean_human_agreement"] = compute_mean_human_agreement_per_prompt(emb_ann1, emb_ann2, emb_ann3)
 
     model_files = {
         "T5-small": "generated_intents/t5-small_AmazonScience_intents.json",
@@ -91,7 +101,7 @@ if __name__ == "__main__":
         })
 
 
-            # Create scatter plot
+        # Create scatter plot
         plt.figure()
         plt.scatter(mean_llm_sim, df["mean_human_agreement"])
         plt.xlabel("LLM Similarity to Annotators (mean)")
@@ -103,23 +113,13 @@ if __name__ == "__main__":
         plt.savefig(plot_path, dpi=300, bbox_inches='tight')
         plt.close()
 
-        print(f"Saved: {plot_path}")
+    print ("\n=== Similarity Results ===")
 
     mean_summary_df = pd.DataFrame(summary_results)
-
-    with open("analysis/t5_full_similarity_summary.csv", "w", encoding="utf-8") as f:
-        f.write("\n")
-        mean_summary_df.to_csv(f, index=False)
+    save_analysis_results(mean_summary_df, "t5_full_similarity_summary.csv")
 
 
-    print("Saved: analysis/t5_full_similarity_summary.csv")
-    print(mean_summary_df)
+    print ("\n=== Correlation Results ===")
 
-    # Save correlation results
     correlation_results_df = pd.DataFrame(correlation_results)
-    with open("analysis/t5_full_correlation_summary.csv", "w", encoding="utf-8") as f:
-        f.write("\n")
-        correlation_results_df.to_csv(f, index=False)
-
-    print("Saved: analysis/t5_full_correlation_summary.csv")
-    print(correlation_results_df)
+    save_analysis_results(correlation_results_df, "t5_full_correlation_summary.csv")
