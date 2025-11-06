@@ -1,5 +1,4 @@
 from sentence_transformers import SentenceTransformer
-from sklearn.metrics.pairwise import cosine_similarity
 import numpy as np
 from scipy.stats import pearsonr
 import pandas as pd
@@ -9,7 +8,7 @@ from cosine_similarity_base import *
 
 
 if __name__ == "__main__":
-    model = SentenceTransformer('sentence-transformers/all-MiniLM-L6-v2')
+    model = get_embedding_model()
 
     humans = pd.read_csv("our_amazon_science_annotations.csv")
     humans.columns = ["prompt", "ann1", "ann2", "ann3"]
