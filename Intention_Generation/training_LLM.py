@@ -27,12 +27,38 @@ def format_input_output(examples, tokenizer, prompt_max=512, intent_max=32, mode
     elif "qwen" in model_name.lower():
         instruction_text = "Generate the intent for the following text: "
         formatted_examples = []
-        for input, target in zip(inputs, targets):
-            input = instruction_text + input
-            formatted_examples.append(f"<|user|>\n{input}\n<|assistant|>\n{target}")
-        model_inputs = tokenizer(formatted_examples, max_length=prompt_max + intent_max, truncation=True, padding="max_length")
-        model_inputs["labels"] = model_inputs["input_ids"].copy()
-        model_inputs["id"] = examples["id"]  # Preserve the original id
+        # for input, target in zip(inputs, targets):
+        #     input = instruction_text + input
+        #     formatted_examples.append(f"<|user|>\n{input}\n<|assistant|>\n{target}")
+        # model_inputs = tokenizer(formatted_examples, max_length=prompt_max + intent_max, truncation=True, padding="max_length")
+        # model_inputs["labels"] = model_inputs["input_ids"].copy()
+        # model_inputs["id"] = examples["id"]  # Preserve the original id
+        for input_text, target in zip(inputs, targets):
+            # Build the message dict in the official chat format
+            messages = [
+                {"role": "system", "content": "You are an intent classifier."},
+                {"role": "user", "content": instruction_text + input_text},
+                {"role": "assistant", "content": target}
+            ]
+            
+            # Use the tokenizer's helper to apply the chat template
+            tokenized = tokenizer.apply_chat_template(
+                messages,
+                add_generation_prompt=True,  # ensures assistant prompt is included
+                tokenize=True,
+                return_dict=True,
+                return_tensors="pt"
+            )
+            
+            formatted_examples.append(tokenized)
+        
+        # Combine tokenized examples into batch dict
+        model_inputs = {
+            "input_ids": torch.stack([ex["input_ids"].squeeze(0) for ex in formatted_examples]),
+            "attention_mask": torch.stack([ex["attention_mask"].squeeze(0) for ex in formatted_examples]),
+            "labels": torch.stack([ex["input_ids"].squeeze(0) for ex in formatted_examples]),
+            "id": examples["id"]  # Preserve original IDs
+        }
 
     return model_inputs
 

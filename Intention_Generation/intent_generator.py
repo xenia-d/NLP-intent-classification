@@ -1,19 +1,28 @@
 import json
 from datasets import load_dataset
 import random
-from transformers import AutoTokenizer, AutoModelForSeq2SeqLM
+from transformers import AutoTokenizer, AutoModelForSeq2SeqLM, AutoModelForCausalLM
 import torch
 import os
 import argparse
 from tqdm import tqdm
+from peft import PeftModel
 
 def load_model(model_name="t5-small"):
     full_model_name = "trained_models/" + model_name + "-model"
 
     tokenizer = AutoTokenizer.from_pretrained(full_model_name)
-    model = AutoModelForSeq2SeqLM.from_pretrained(full_model_name)
+    if "t5" in model_name:
+        model = AutoModelForSeq2SeqLM.from_pretrained(full_model_name)
+    if "qwen" in model_name.lower():
+        if "lora" in model_name.lower():
+            model = AutoModelForCausalLM.from_pretrained(model_name, trust_remote_code=True, load_in_8bit=True)
+            model = PeftModel.from_pretrained(model, full_model_name)
+        else:
+            model = AutoModelForCausalLM.from_pretrained(full_model_name, trust_remote_code=True)
 
     return model, tokenizer
+
 
 def get_dataset(num_samples=20):
     dataset = load_dataset("AmazonScience/FalseReject", split="train")
@@ -24,16 +33,31 @@ def get_dataset(num_samples=20):
 
     return prompts
 
-def run_inference(model, tokenizer, inputs):
+def run_inference(model, tokenizer, inputs, model_name="t5-small"):
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    model.to(device)
+    if "lora" not in model_name.lower():
+        model.to(device)
     model.eval()
 
     generated_intents = []
+    instruction_text = "Generate the intent for the following text: "
 
     for prompt in tqdm(inputs):
-        input_ids = tokenizer.encode(prompt, return_tensors="pt").to(device)
-        outputs = model.generate(input_ids, max_length=32, num_return_sequences=1)
+        if "t5" in model_name:
+            input_ids = tokenizer.encode(prompt, return_tensors="pt").to(device)
+            with torch.no_grad():
+                outputs = model.generate(input_ids, max_length=32, num_return_sequences=1)
+
+        if "qwen" in model_name.lower():
+            prompt = f"<|user|>\n{instruction_text}{prompt}\n<|assistant|>\n"
+            input_ids = tokenizer.encode(prompt, return_tensors="pt", truncation=True, max_length=512).to(device)
+            enc = tokenizer(prompt, return_tensors="pt", truncation=True, padding="max_length", max_length=512)
+            input_ids = enc.input_ids.to(device)
+            attention_mask = enc.attention_mask.to(device)
+            
+            with torch.no_grad():
+                outputs = model.generate(input_ids, attention_mask=attention_mask, num_return_sequences=1, max_new_tokens=32)
+
         intent = tokenizer.decode(outputs[0], skip_special_tokens=True)
         generated_intents.append(intent)
 
@@ -63,7 +87,7 @@ def main(model_name="t5-small"):
     prompts = get_dataset(num_samples=20)
     # save_prompts(prompts)
     model, tokenizer = load_model(model_name=model_name)
-    generated_intents = run_inference(model, tokenizer, prompts)
+    generated_intents = run_inference(model, tokenizer, prompts, model_name=model_name)
     save_intents(generated_intents, prompts, model_name=model_name)
 
 
