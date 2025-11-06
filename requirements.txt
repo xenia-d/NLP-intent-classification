@@ -3,3 +3,13 @@ huggingface-hub
 pandas
 numpy
 tqdm
+torch
+scikit-learn
+transformers
+hf_xet
+jupyter
+matplotlib
+sentence-transformers
+compressed-tensors
+accelerate
+bitsandbytes

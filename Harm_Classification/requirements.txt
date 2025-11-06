@@ -1,0 +1,10 @@
+torch
+numpy
+pandas
+scikit-learn
+transformers[torch]
+tqdm
+hf_xet
+matplotlib
+pyarrow
+jupyter
