@@ -99,8 +99,7 @@ def train_model(trainer, tokenizer):
     tokenizer.save_pretrained("./fine_tuned_model")
 
 
-def get_all_preds(trainer, dataset, tokenizer, device):
-    model = trainer.model
+def get_all_preds(model, dataset, tokenizer, device):
     model.eval()
 
     collate_fn = DataCollatorWithPadding(tokenizer, return_tensors="pt")
@@ -117,12 +116,11 @@ def get_all_preds(trainer, dataset, tokenizer, device):
     predictions = []
     for batch in dataloader:
         input_ids = batch["input_ids"].to(device)
-        # attention_mask = batch["attention_mask"].to(device)
         attention_mask = batch.get("attention_mask", None)
         if attention_mask is not None:
             attention_mask = attention_mask.to(device)
         with torch.no_grad():
-            outputs = trainer.model(input_ids=input_ids, attention_mask=attention_mask)
+            outputs = model(input_ids=input_ids, attention_mask=attention_mask)
             pred_ids = torch.argmax(outputs.logits, dim=-1)
         predictions.extend(pred_ids.cpu().numpy())
         torch.cuda.empty_cache()
@@ -175,8 +173,10 @@ def train_main(model_name="t5-small"):
     train_model(trainer, tokenizer)
 
     evaluate_on_val(trainer, val_dataset)
-    preds = get_all_preds(trainer, val_dataset, tokenizer, device)
-    save_preds(model_name, preds, val_dataset, tokenizer)
+    preds_val = trainer.predict(val_dataset)
+    save_preds(model_name, preds_val, val_dataset, tokenizer)
+    preds_test = trainer.predict(test_dataset)
+    save_preds(model_name, preds_test, test_dataset, tokenizer)
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Train a model for intent classification.")
