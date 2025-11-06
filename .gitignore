@@ -10,3 +10,5 @@ train_results/
 fine_tuned_model/
 
 Intention_Generation/trained_models/*
+
+Saved_Models/*
