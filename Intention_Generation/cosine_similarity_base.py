@@ -2,6 +2,11 @@ from sentence_transformers import SentenceTransformer
 from sklearn.metrics.pairwise import cosine_similarity
 import numpy as np
 
+def get_embedding_model():
+    model = SentenceTransformer('sentence-transformers/all-MiniLM-L6-v2')
+
+    return model
+
 def get_index_wisecosine_similarity(embeddings1, embeddings2):
     """
     Compute the cosine similarity between two sets of embeddings, at each index.

@@ -68,9 +68,9 @@ As a further analysis, we explored if there is a correlation with LLM agreement 
 
 
 <p align="center">
-  <img src="analysis/T5-small_correlation_plot.png" width="30%" />
-  <img src="analysis/T5-base_correlation_plot.png" width="30%" />
-  <img src="analysis/T5-large_correlation_plot.png" width="30%" />
+  <img src="analysis/Amazon_science/T5-small_correlation_plot.png" width="30%" />
+  <img src="analysis/Amazon_science/T5-base_correlation_plot.png" width="30%" />
+  <img src="analysis/Amazon_science/T5-large_correlation_plot.png" width="30%" />
 </p>
 
 

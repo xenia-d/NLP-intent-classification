@@ -1,5 +1,0 @@
-
-Model,Correlation (LLM vs Human Agreement),p-value
-T5-small,0.468,0.0433
-T5-base,0.679,0.0014
-T5-large,0.59,0.0078

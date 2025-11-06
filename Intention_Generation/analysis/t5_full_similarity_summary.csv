@@ -1,5 +1,0 @@
-
-Model,T5 vs Ann1,T5 vs Ann2,T5 vs Ann3,T5 vs All Ann
-T5-small,0.597,0.606,0.482,0.562
-T5-base,0.676,0.683,0.596,0.652
-T5-large,0.679,0.676,0.575,0.643
