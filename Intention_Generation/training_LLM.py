@@ -5,34 +5,21 @@ import numpy as np
 import os
 import matplotlib.pyplot as plt
 import argparse
-from trl import SFTTrainer
 from torch.utils.data import DataLoader
 from transformers import DataCollatorWithPadding
-from peft import LoraConfig, get_peft_model
 
 
 from preproccesing import preprocess_data
 
 
-def format_input_output(examples, tokenizer, prompt_max=512, intent_max=32, model_name="t5-small"):
+def format_input_output(examples, tokenizer, prompt_max=512, intent_max=32):
     inputs = examples["prompt"]
     targets = examples["intent"]
 
-    if "t5" in model_name:
-        model_inputs = tokenizer(inputs, max_length=prompt_max, truncation=True, padding="max_length")
-        labels = tokenizer(targets, max_length=intent_max, truncation=True, padding="max_length")
-        model_inputs["labels"] = labels["input_ids"]
-        model_inputs["id"] = examples["id"]  # Preserve the original id
-
-    elif "qwen" in model_name.lower():
-        instruction_text = "Generate the intent for the following text: "
-        formatted_examples = []
-        for input, target in zip(inputs, targets):
-            input = instruction_text + input
-            formatted_examples.append(f"<|user|>\n{input}\n<|assistant|>\n{target}")
-        model_inputs = tokenizer(formatted_examples, max_length=prompt_max + intent_max, truncation=True, padding="max_length")
-        model_inputs["labels"] = model_inputs["input_ids"].copy()
-        model_inputs["id"] = examples["id"]  # Preserve the original id
+    model_inputs = tokenizer(inputs, max_length=prompt_max, truncation=True, padding="max_length")
+    labels = tokenizer(targets, max_length=intent_max, truncation=True, padding="max_length")
+    model_inputs["labels"] = labels["input_ids"]
+    model_inputs["id"] = examples["id"]  # Preserve the original id
 
     return model_inputs
 
@@ -56,18 +43,8 @@ def get_tokenizer(model_name):
 
     return tokenizer
 
-def get_model(model_name, use_lora=False):
-    if "t5" in model_name:
-        model = AutoModelForSeq2SeqLM.from_pretrained(model_name)
-    elif "Qwen" in model_name:
-        if use_lora:
-            model = AutoModelForCausalLM.from_pretrained(model_name, trust_remote_code=True, load_in_8bit=True)
-        else:
-            model = AutoModelForCausalLM.from_pretrained(model_name, trust_remote_code=True)
-
-    if use_lora:
-        lora_config = LoraConfig(r=16, lora_alpha=32, target_modules=["q_proj", "v_proj"], lora_dropout=0.1, bias="none", task_type="CAUSAL_LM")
-        model = get_peft_model(model, lora_config)
+def get_model(model_name):
+    model = AutoModelForSeq2SeqLM.from_pretrained(model_name)
 
     return model
 
@@ -108,33 +85,6 @@ def t5_trainer(model, tokenizer, train_dataset, val_dataset, intent_max, epochs=
         train_dataset=train_dataset,
         eval_dataset=val_dataset,
         tokenizer=tokenizer,
-    )
-
-    return trainer
-
-def qwen_trainer(model, tokenizer, train_dataset, val_dataset, intent_max, epochs=5, lr=2e-5, batch_size=8):
-    # Define training arguments
-    training_args = TrainingArguments(
-        output_dir="./train_results",
-        eval_strategy="epoch",
-        save_strategy="epoch",
-        learning_rate=lr,
-        per_device_train_batch_size=batch_size,
-        per_device_eval_batch_size=batch_size,
-        num_train_epochs=epochs,
-        weight_decay=0.01,
-        save_total_limit=2,
-        logging_dir="./logs",
-        load_best_model_at_end=True,
-        metric_for_best_model="eval_loss" 
-    )
-
-    # Define the Trainer
-    trainer = SFTTrainer(
-        model=model,
-        args=training_args,
-        train_dataset=train_dataset,
-        eval_dataset=val_dataset 
     )
 
     return trainer
@@ -210,21 +160,18 @@ def save_preds(model_name, predictions, eval_dataset, tokenizer):
             json.dump({'id': original_id, 'prediction': decoded_pred, 'true_intent': true_intent}, f, ensure_ascii=False)
             f.write('\n')
 
-def train_main(model_name="t5-small", lora=False):
+def train_main(model_name="t5-small"):
     final_dataset = preprocess_data()
     prompt_max, intent_max = get_lengths(final_dataset, plot=False)
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    model = get_model(model_name=model_name, use_lora=lora).to(device)
+    model = get_model(model_name=model_name).to(device)
     tokenizer = get_tokenizer(model_name=model_name)
 
-    tokenized_dataset = final_dataset.map(format_input_output, fn_kwargs={"tokenizer": tokenizer, "prompt_max": prompt_max, "intent_max": intent_max, "model_name": model_name}, batched=True)
+    tokenized_dataset = final_dataset.map(format_input_output, fn_kwargs={"tokenizer": tokenizer, "prompt_max": prompt_max, "intent_max": intent_max}, batched=True)
     train_dataset, val_dataset, test_dataset = train_val_test_split(tokenized_dataset, test_size=0.1, val_size=0.1, seed=22)
 
-    if "t5" in model_name:
-        trainer = t5_trainer(model, tokenizer, train_dataset, val_dataset, intent_max)
-    elif "qwen" in model_name.lower():
-        trainer = qwen_trainer(model, tokenizer, train_dataset, val_dataset, intent_max)
+    trainer = t5_trainer(model, tokenizer, train_dataset, val_dataset, intent_max)
     train_model(trainer, tokenizer)
 
     evaluate_on_val(trainer, val_dataset)
@@ -234,7 +181,6 @@ def train_main(model_name="t5-small", lora=False):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Train a model for intent classification.")
     parser.add_argument("--model_name", type=str, default="t5-small", help="Name of the pre-trained model to use.")
-    parser.add_argument("--lora", type=bool, default=False, help="Whether to use LoRA for fine-tuning.")
     args = parser.parse_args()
 
-    train_main(model_name=args.model_name, lora=args.lora)
+    train_main(model_name=args.model_name)

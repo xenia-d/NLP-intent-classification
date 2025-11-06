@@ -15,6 +15,7 @@ def load_model(model_name="t5-small"):
 
     return model, tokenizer
 
+
 def get_dataset(num_samples=20):
     dataset = load_dataset("AmazonScience/FalseReject", split="train")
     prompts = dataset['prompt']
@@ -33,7 +34,8 @@ def run_inference(model, tokenizer, inputs):
 
     for prompt in tqdm(inputs):
         input_ids = tokenizer.encode(prompt, return_tensors="pt").to(device)
-        outputs = model.generate(input_ids, max_length=32, num_return_sequences=1)
+        with torch.no_grad():
+            outputs = model.generate(input_ids, max_length=32, num_return_sequences=1)
         intent = tokenizer.decode(outputs[0], skip_special_tokens=True)
         generated_intents.append(intent)
 
