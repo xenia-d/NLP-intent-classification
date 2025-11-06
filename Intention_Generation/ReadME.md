@@ -7,6 +7,8 @@
 
 # Analysis of Intent Generation Models
 
+# T5
+
 Once the T5 and Qwen models were trained on our ~1800 annotations on the WildGuard dataset, we performed inference on 20 prompts from the `AmazonScience/FalseReject` dataset from HuggingFace, found here : https://huggingface.co/datasets/AmazonScience/FalseReject/viewer/default/train?views%5B%5D=train 
 
 We used prompts from this dataset to analyze the model's behavior, and compare it to that of our own annotations on the same prompts.
@@ -52,3 +54,5 @@ As a further analysis, we explored if there is a correlation with LLM agreement 
 
 
 It can be seen that T5-base shows a moderately positive correlation in agreement with human annotators, while T5-small does not show a clear correlation. 
+
+All these analyses are also saved and can be found in the `analysis` folder. 
