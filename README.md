@@ -21,7 +21,7 @@ We found that the mean cosine similarity across the 6 of us was 0.61, and the me
 
 
 
-Once we concluded that our inter-annotator was sufficient and surpassed the LLM baseline comparison, the  the six of us continued to follow our annotation protocol to annotate ~300 prompts each from the WildGuard dataset, considering an interval of the labels with maximum confidence between 0.35 and 0.65, as determined by an ensemble implemented by group 8. This resulted in a total of ~1800 prompts annotated among the 6 of us. 
+Once we concluded that our inter-annotator was sufficient and surpassed the LLM baseline comparison, the six of us continued to follow our annotation protocol to annotate ~300 prompts each from the WildGuard dataset, considering an interval of the labels with maximum confidence between 0.35 and 0.65, as determined by an ensemble implemented by group 8. This resulted in a total of ~1800 prompts annotated among the 6 of us. 
 
 
 Our annotation protocol is the same protocol and guidelines we prompted LLMs to follow when testing LLM intention analysis to compare with our human intent annotations.
