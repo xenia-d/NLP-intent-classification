@@ -36,7 +36,11 @@ It can be seen that the T5-base model has the highest mean cosine similarity acr
 As a further analysis, we explored if there is a correlation with LLM agreement to the annotators for prompts where annotators agreed more with each other. In other words, if there is a correlation between inter-annotator agreement, and LLM aggrement with annotators. We computed the correlation between LLM-human agreement and human-human agreement per prompt shown in the table below as well as some scatterplots.
 
 
-![alt text](analysis/T5-small_correlation_plot.png)![alt text](analysis/T5-base_correlation_plot.png)![alt text](analysis/T5-large_correlation_plot.png)
+<p align="center">
+  <img src="analysis/T5-small_correlation_plot.png" width="30%" />
+  <img src="analysis/T5-base_correlation_plot.png" width="30%" />
+  <img src="analysis/T5-large_correlation_plot.png" width="30%" />
+</p>
 
 
 
