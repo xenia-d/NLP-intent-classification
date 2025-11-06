@@ -3,6 +3,7 @@ from sklearn.metrics.pairwise import cosine_similarity
 import numpy as np
 from scipy.stats import pearsonr
 import pandas as pd
+import matplotlib.pyplot as plt
 
 def get_index_wisecosine_similarity(embeddings1, embeddings2):
     """
@@ -163,6 +164,20 @@ if __name__ == "__main__":
         "p-value": round(pval, 4)
         })
 
+
+            # Create scatter plot
+        plt.figure()
+        plt.scatter(mean_llm_sim, df["mean_human_agreement"])
+        plt.xlabel("LLM Similarity to Annotators (mean)")
+        plt.ylabel("Human Inter-Annotator Agreement (mean)")
+        plt.title(f"{model_name}: LLM-Human Agreement Correlation")
+
+        # Save plot
+        plot_path = f"analysis/{model_name}_correlation_plot.png"
+        plt.savefig(plot_path, dpi=300, bbox_inches='tight')
+        plt.close()
+
+        print(f"Saved: {plot_path}")
 
     mean_summary_df = pd.DataFrame(summary_results)
 
