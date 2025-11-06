@@ -10,5 +10,5 @@ Note that while this is our implementation of UQ, the final outcome of this step
 ## 2. Human Annotation
 Can someone maybe write this section explaining the protocol and what we did etc.
 
-After initial group annotation, an analysis was performed to investigate the inter-annotator agreement between all annotators. This can be found in the `Intention_Analysis` folder.
+After initial group annotation, an analysis was performed to investigate the inter-annotator agreement between all annotators. This can be found in the `Intention_Analysis` folder, in the file `intent classification annotation protocol.pdf`
 
