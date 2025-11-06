@@ -1,7 +1,12 @@
 # Training Intent Generation Models 
 
- blablabla <3
- mention the 3 T5 models, the 2 Qwen models
+We trained 3 versions of the T5 model on our labelled intents of the WildGuard dataset. Training used a 80/10/10 train/val/test split to fine-tune the T5 small, base and large models. Each model was trained for `8 epochs`, with a learning rate of `5e-5`, a batch size of `8` and a weight decay of `0.01`. Following this training the best model was selected according to the lowest validation loss (measured every epoch). Below the validation loss of these final models are presented.
+
+|      | T5-Small  | T5-Base  | T5-Large  |
+|------|-------|-------|-------|
+| Eval Loss | 0.846 | 0.731 | 0.666 |
+
+As can be seen, the larger the model, the lower validation loss obtained and thus the better the model performed.
 
 
 
@@ -11,7 +16,7 @@
 
 
 
-Once the T5 and Qwen models were trained on our ~1800 annotations on the WildGuard dataset, we performed inference on 20 prompts from the `AmazonScience/FalseReject` dataset from HuggingFace, found here : https://huggingface.co/datasets/AmazonScience/FalseReject/viewer/default/train?views%5B%5D=train. This is to test the generalizability of the intent generation capabilities of the model to a new dataset, where a common challenge of it is "false rejection", where the prompts are quite sensitive and confusing for LLMs often leading to "rejecting" the prompt (considering it as harmful) when it is actually safe. We are interested in what kind of intents models trained on our WildGuard annotations would generate on these kinds of sensitive prompts. 
+Once the T5 were trained on our ~1800 annotations on the WildGuard dataset, we performed inference on 20 prompts from the `AmazonScience/FalseReject` dataset from HuggingFace, found here : https://huggingface.co/datasets/AmazonScience/FalseReject/viewer/default/train?views%5B%5D=train. This is to test the generalizability of the intent generation capabilities of the model to a new dataset, where a common challenge of it is "false rejection", where the prompts are quite sensitive and confusing for LLMs often leading to "rejecting" the prompt (considering it as harmful) when it is actually safe. We are interested in what kind of intents models trained on our WildGuard annotations would generate on these kinds of sensitive prompts. 
 
 We used prompts from this dataset to analyze the model's behavior, and compare it to that of our own annotations on the same prompts. 
 
