@@ -81,3 +81,4 @@ All these analyses are also saved and can be found in the `analysis` folder.
 
 ## Qualitative Analysis
 
+As a general observation across all T5 models, they tend to use exact key words as used in the prompt in their generated intention. Although in some cases this may feel appropriate, it also raises questions if the LLMs are able to extract the nuance behind some of these prompts, as sometimes word-for-word reiterations may not capture the true underlying intent. It may signify the reason why LLMs may someones be fooled by harmful prompts disguised as safe ones, especially if the wording of the prompt is engineering in a seemingly non-harmful way. 
