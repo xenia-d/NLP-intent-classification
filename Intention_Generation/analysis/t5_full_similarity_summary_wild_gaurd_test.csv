@@ -1,0 +1,5 @@
+
+Model,Cosine Similarity (Model Prediction vs Human Label)
+t5-base,0.608
+t5-large,0.61
+t5-small,0.561
