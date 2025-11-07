@@ -26,4 +26,7 @@ Our annotation protocol is the same protocol and guidelines we prompted LLMs to 
 
 ## 3. Intention Generation Model
 
-Next, using our ~1800 human labeled prompts of the WildGuard dataset, we used this to fine-tune 
+Next, we trained LLMs on our annotated WildGuard dataset, and tested its generalizability to a different dataset. The code and analysis for this section is found in the folder `Intention_Generation`.
+We split our annotated WildGuard dataset prompts into train-val-test split, and used ~1500 human labeled prompts to train three versions of T5 models: T5-small, T5-base, and T5-large. We then performed analysis of these intent generation models on the WildGuard test set of our annotated samples, as well a different dataset, the `AmazonScience/FalseReject` dataset. We measured mean cosine similarity between out human annotations on these respective datasets, to test the model agreement with humans. We also explored the correlation of model-human agreement to human agreement for the set of prompts in the `AmazonScience/FalseReject`. In addition to these quantitative analyses, we also performed some qualitative analysis on the generated prompts from each of the three models, and analyzed how they compare with human annotations. 
+
+Our main conclusion from this is that LLMs tend to iterate the same words used in the prompt itself when generating the intention, while humans tend to rephase the words in efforts to make the intent more concise. This seemed to be the main distinguishing factor between human annotated intentions and model annotated intentions. The full analysis and details on the training is found in the ReadME file in the `Intention_Generation` folder. 
