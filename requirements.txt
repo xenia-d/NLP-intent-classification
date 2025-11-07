@@ -6,10 +6,15 @@ tqdm
 torch
 scikit-learn
 transformers
-hf_xet
 jupyter
-matplotlib
 sentence-transformers
 compressed-tensors
 accelerate
 bitsandbytes
+transformers[torch]
+hf_xet
+matplotlib
+pyarrow
+vllm
+sentence_transformers
+seaborn

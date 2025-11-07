@@ -1,8 +1,0 @@
-pandas
-transformers[torch]
-datasets
-matplotlib
-torch
-torchvision
-jupyter
-trl
